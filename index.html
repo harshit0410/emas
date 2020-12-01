@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Eco System Monitering System</title>
+        <style>
+            body{
+                background-color: rgb(185, 243, 109);
+            }
+            h1 {
+                align-content: center;
+                text-align: center;
+            }
+
+            p{
+                text-align: center;
+            }
+            @keyframes mymove {
+                from {background-color: red;}
+                to {background-color: yellow;}
+            }
+            .standard {
+                font-size: larger;
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            var foo= function(di,ap){
+                var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var myObj = JSON.parse(this.responseText);
+                   
+                    var a=0;
+                    var k=0;
+                    myObj.feeds.forEach(element => {
+                        
+                        if(!isNaN(element.field1)){
+                            a+=parseInt(element.field1);
+                            k++;
+                        }
+                        
+                    });
+                    document.getElementById(di).innerHTML=(a/k).toFixed(3);
+                    var z=a/k;
+                    if(di=='air'){
+                        if (z<20)
+                        document.getElementById(di).innerHTML+=" PPM is the current value and it is considered good.";
+                        else if (z>20 && z<50)
+                        document.getElementById(di).innerHTML+=" PPM is the current value and it is considered moderate.";
+                        else
+                        document.getElementById(di).innerHTML+=" PPM is the current value and it is considered bad.";
+                    }
+                    else{
+                        if (z<16)
+                        document.getElementById(di).innerHTML+=" degree celcius is the current value and it is considered low.";
+                        else if (z>16 && z<24)
+                        document.getElementById(di).innerHTML+=" degree celcius is the current value and it is considered moderate.";
+                        else
+                        document.getElementById(di).innerHTML+=" degree celcius is the current value and it is considered high.";
+                    }
+                
+                }
+                else{
+                   // document.getElementById("root").innerHTML = "error";
+                }
+            };
+            xmlhttp.open("GET",ap , true);
+            xmlhttp.send();
+            }
+            foo("air","https://api.thingspeak.com/channels/1238186/feeds.json?api_key=6HMFMPCNHC568HU7");
+            foo("temp","https://api.thingspeak.com/channels/1236593/feeds.json?api_key=IP1CIZNFSD6SUQ7D");
+
+            var bar= function(di,ap){
+                var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var myObj = JSON.parse(this.responseText);
+                    
+                    var a=0;
+                    var k=0;
+                    myObj.feeds.forEach(element => {
+                        
+                        if(!isNaN(element.field2)){
+                            a+=parseInt(element.field2);
+                            k++;
+                        }
+                        
+                    });
+                    document.getElementById(di).innerHTML=(a/k).toFixed(3);
+                    console.log('yes');
+                    var z=a/k;
+                    if (z<40)
+                        document.getElementById(di).innerHTML+=" % is the current value and it is considered dry.";
+                        else if (z>40 && z<65)
+                        document.getElementById(di).innerHTML+=" % is the current value and it is considered moderate.";
+                        else
+                        document.getElementById(di).innerHTML+=" % is the current value and it is considered humid.";
+                }
+                else{
+                   // document.getElementById("root").innerHTML = "error";
+                }
+            };
+            xmlhttp.open("GET",ap , true);
+            xmlhttp.send();
+            }
+            setInterval( bar("humi","https://api.thingspeak.com/channels/1236593/feeds.json?api_key=IP1CIZNFSD6SUQ7D"),1000);
+            setTimeout(function(){
+   window.location.reload(1);
+}, 15000);
+        </script>
+
+        <h1>Ecosystem Monitering and Assessment System</h1>
+        <br>
+        <div id ='root'>
+            <div class="standard">
+                <h2>Standards for Industry</h2>
+                <p>
+                    <ul>
+                        <li>Temperature : 20 degree Celcius</li>
+                        <li>Humidity : Below 55% (Less than 40% for no rust generation)</li>
+                        <li>Air Quality : Less than 20 PPM.</li>
+                    </ul>
+                </p>
+            </div>
+
+
+            <div>
+                <h2>Temperature Data</h2>
+                <p id='temp'>
+
+                </p>
+            </div>
+            <br>
+            <div>
+                <h2>Humidity Data</h2>
+                <p id='humi'>
+
+                </p>
+            </div>
+            <br>
+            <div>
+                <h2>Air Quality Data</h2>
+                <p id='air'>
+
+                </p>
+            </div>
+        </div>
+        
+        
+    </body>
+</html>
